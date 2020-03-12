@@ -46,7 +46,7 @@ median_byDay
 
 #### What is the average daily activity pattern?
 ```{r, echo=TRUE}
-# series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+# series plot (i.e.type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 interval_mean <- aggregate(steps ~ interval, data = document, mean, na.rm = TRUE)
 plot(interval_mean$interval, interval_mean$steps, type = "l", col = "purple", xlim = c(0, 2500), main = "Average daily", xlab = "Interval", ylab = "Steps mean")
 dev.copy(png, "Plot_Question_2.png", height = 480, width = 480)
@@ -58,7 +58,7 @@ max_steps
 ```
 #### Imputing missing values
 ```{r, echo=TRUE}
-# Total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs
+# Total number of missing values in the dataset (i.e. the total number of rows with NAs
 null_rows <- sum(is.na(document$steps))
 null_rows
 
@@ -90,3 +90,32 @@ median_byDayComplete
 
 
 #### Are there differences in activity patterns between weekdays and weekends?
+```{r, echo=TRUE}
+# Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day
+str(completeDocument)
+# I have already change the class of date variable in the beginning of this exercice. 
+
+# Now we need identify what name of the day are each date. To do this I apply the function 'weekday()'
+completeDocument$day_name <- weekdays(completeDocument$date)
+
+# Once we have the names by each date, we have to create a new variable to classify and group by 'weekend' or 'weekday'
+completeDocument$type_of_day <- ifelse(completeDocument$day_name == "sábado" | completeDocument$day_name == "domingo", "Weekend", "Weekday")
+
+# Plot containing a time series plot (i.e.type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
+# I have created two groups, one per type of day 'weekend' and the other with 'weekday'
+weekend <- subset(completeDocument, type_of_day == "Weekend")
+weekday <- subset(completeDocument, type_of_day == "Weekday")
+# Now I calculate the mean by each group created
+average_weekend <- aggregate(steps ~ interval, data = weekend, mean, na.rm = TRUE)
+average_weekday <- aggregate(steps ~ interval, data = weekday, mean, na.rm = TRUE)
+
+# Then I apply the 'par()' function to represent the layout for both plots together
+par(mfrow = c(2, 1), mar = c(4, 4, 4, 1))
+plot(average_weekend$interval, average_weekend$steps, type = "l", ylim = c(0, 250), ylab = "Frequency_weekend", xlab = "Interval", main = "Weekend", col = "purple")
+plot(average_weekday$interval, average_weekday$steps, type = "l", ylim = c(0, 250), ylab = "Frequency_weekday", xlab = "Interval", main = "Weekday", col = "purple")
+dev.copy(png, "Plot_Question_4.png", height = 480, width = 480)
+dev.off()
+```
+
+
