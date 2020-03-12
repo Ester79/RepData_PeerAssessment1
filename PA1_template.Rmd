@@ -26,7 +26,7 @@ class(document$date)
 ```
 
 #### What is mean total number of steps taken per day?
-```{r, echo=TRUE}
+```{r}
 # Total numbers taken per day
 steps_byDay <- aggregate(steps ~ date, data = document, sum)
 summary(steps_byDay)
