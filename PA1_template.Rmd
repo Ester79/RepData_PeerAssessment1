@@ -6,7 +6,7 @@ output:
 ---
 
 
-## Loading and preprocessing the data
+#### Loading and preprocessing the data
 ```{r, echo=TRUE}
 getwd()
 document <- read.csv("activity.csv", header = TRUE, sep = ",")
@@ -19,16 +19,43 @@ head(document)
 # Review if there are some missing values and how many
 sum(is.na(document))
 mean(is.na(document))
+
+# The class of the variable 'date' is Factor. I change it to Date class
+document$date <- as.Date(document$date, format = "%Y-%m-%d")
+class(document$date)
 ```
 
-## What is mean total number of steps taken per day?
+#### What is mean total number of steps taken per day?
+```{r, echo=TRUE}
+# Total numbers taken per day
+steps_byDay <- aggregate(steps ~ date, data = document, sum)
+summary(steps_byDay)
+steps_byDay
 
+# Histogram
+hist(steps_byDay$steps, main = "Steps per day", xlab = "Steps", ylim = c(0, 15), col = "purple", breaks = seq(0, 25000, by = 1000))
+dev.copy(png, "Plot_Question_1.png", height = 480, width = 480)
+dev.off()
 
+# mean and median of the total number of steps taken per day
+mean_byDay <- mean(steps_byDay$steps, na.rm = TRUE)
+mean_byDay
+median_byDay <- median(steps_byDay$steps, na.rm = TRUE)
+median_byDay
+```
 
-## What is the average daily activity pattern?
+#### What is the average daily activity pattern?
+```{r, echo=TRUE}
+# series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+interval_mean <- aggregate(steps ~ interval, data = document, mean, na.rm = TRUE)
+plot(interval_mean$interval, interval_mean$steps, type = "l", col = "purple", xlim = c(0, 2500), main = "Average daily", xlab = "Interval", ylab = "Steps mean")
+dev.copy(png, "Plot_Question_2.png", height = 480, width = 480)
+dev.off()
 
-
-
+# Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+max_steps <- interval_mean[which.max(interval_mean$steps),]$interval
+max_steps
+```
 ## Imputing missing values
 
 
