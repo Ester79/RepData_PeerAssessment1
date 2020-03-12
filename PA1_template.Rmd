@@ -7,8 +7,19 @@ output:
 
 
 ## Loading and preprocessing the data
-
-
+```{r, echo=TRUE}
+getwd()
+document <- read.csv("activity.csv", header = TRUE, sep = ",")
+# Brief analysis of the data
+class(document)
+dim(document)
+str(document)
+summary(document)
+head(document)
+# Review if there are some missing values and how many
+sum(is.na(document))
+mean(is.na(document))
+```
 
 ## What is mean total number of steps taken per day?
 
